@@ -1,11 +1,11 @@
 import validator from "validator";
 import userModel from "../models/userModel.js";
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
-}
+};
 
 const loginUser = async (req, res) => {
   try {
@@ -28,15 +28,14 @@ const loginUser = async (req, res) => {
       token,
       user: {
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
   } catch (error) {
     console.error("Error while logging in user: ", error);
     res.json({ success: false, message: "Error in login: " + error.message });
   }
 };
-
 
 const registerUser = async (req, res) => {
   try {
@@ -52,7 +51,10 @@ const registerUser = async (req, res) => {
     }
 
     if (password.length < 4) {
-      return res.json({ success: false, message: "Password must be at least 4 characters" });
+      return res.json({
+        success: false,
+        message: "Password must be at least 4 characters",
+      });
     }
 
     // Hash password
@@ -69,8 +71,8 @@ const registerUser = async (req, res) => {
       token,
       user: {
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
   } catch (error) {
     console.error("Error while registering user: ", error);
@@ -78,31 +80,25 @@ const registerUser = async (req, res) => {
   }
 };
 
-
 const adminLogin = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
-
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
       const token = jwt.sign(email + password, process.env.JWT_SECRET);
       res.json({ success: true, token });
-
-    }
-    else {
-
+    } else {
       return res.json({
         success: false,
-        message: "Wrong ID or password"
+        message: "Wrong ID or password",
       });
-
     }
-  }
-  catch (error) {
+  } catch (error) {
     res.json({ success: false, message: error.message });
   }
-}
+};
 
 export { loginUser, registerUser, adminLogin };
